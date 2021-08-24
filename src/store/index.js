@@ -7,7 +7,18 @@ const STORE = new LocalStorage('todo-vue')
 
 export default new Vuex.Store({
   state: {
-    todos: []
+    todos: [{ content: 123, done: false }, { content: 456, done: false }, { content: 789, done: false }]
+  },
+  getters: {
+    // 產出todoId，如有後端資料庫，則不須此動作
+    list (state) {
+      return state.todos.map((todo, tid) => {
+        return {
+          tid,
+          todo
+        }
+      })
+    }
   },
   mutations: {
     SET_TODOS (state, todos) {
