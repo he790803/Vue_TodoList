@@ -18,6 +18,24 @@ export default new Vuex.Store({
           todo
         }
       })
+    },
+    filterList (state, getters) {
+      return function (filter) {
+        switch (filter) {
+          case 'all':
+            return getters.list
+          case 'active':
+            return getters.list.filter((todo) => {
+              return todo.todo.done === false
+            })
+          case 'done':
+            return getters.list.filter((todo) => {
+              return todo.todo.done === true
+            })
+          default:
+            return []
+        }
+      }
     }
   },
   mutations: {
