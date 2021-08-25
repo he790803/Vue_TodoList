@@ -7,14 +7,15 @@ const STORE = new LocalStorage('todo-vue')
 
 export default new Vuex.Store({
   state: {
-    todos: [{ content: 123, done: false }, { content: 456, done: false }, { content: 789, done: false }]
+    // todos: [{ content: 123, done: false }, { content: 456, done: true }, { content: 789, done: false }]
+    todos: []
   },
   getters: {
     // 產出todoId，如有後端資料庫，則不須此動作
     list (state) {
-      return state.todos.map((todo, tid) => {
+      return state.todos.map((todo, tId) => {
         return {
-          tid,
+          tId,
           todo
         }
       })
@@ -70,27 +71,39 @@ export default new Vuex.Store({
         todo
       }
     },
-    EIDE_TODO ({ commit }, { tid, todo }) {
+    EIDE_TODO ({ commit }, { tId, todo }) {
       // 1. 使用API的情況:axios.delete()
       const todos = STORE.load()
-      const newTodo = todos.splice(tid, 1, todo)
+      const newTodo = todos.splice(tId, 1, todo)
       STORE.save(todos)
       // 2. commit 呼叫mutations
       commit('SET_TODOS', todos)
       return {
-        tid,
+        tId,
         newTodo
       }
     },
-    DELETE_TODO ({ commit }, { tid }) {
+    CHECK_TODO ({ commit }, { tId, done }) {
       // 1. 使用API的情況:axios.delete()
       const todos = STORE.load()
-      const todo = todos.splice(tid, 1)[0]
+      todos[tId].done = done
       STORE.save(todos)
       // 2. commit 呼叫mutations
       commit('SET_TODOS', todos)
       return {
-        tid: null,
+        tId,
+        todo: todos[tId]
+      }
+    },
+    DELETE_TODO ({ commit }, { tId }) {
+      // 1. 使用API的情況:axios.delete()
+      const todos = STORE.load()
+      const todo = todos.splice(tId, 1)[0]
+      STORE.save(todos)
+      // 2. commit 呼叫mutations
+      commit('SET_TODOS', todos)
+      return {
+        tId: null,
         todo
       }
     }
